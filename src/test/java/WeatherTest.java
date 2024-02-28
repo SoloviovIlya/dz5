@@ -46,7 +46,7 @@ public class WeatherTest extends AbstractTest{
         Weather responseBody = mapper.readValue(responseOK.getEntity().getContent(), Weather.class);
         assertEquals("Категория", responseBody.getHeadline().getCategory());
         assertEquals("Текст", responseBody.getHeadline().getText());
-        assertEquals(10, responseBody.getDailyForecasts().size());
+        assertEquals(10, responseBody.getDailyForecasts().size()); //тут надо ожидать 1. т.к. Вы определли только одну погоду в Weather на строке 31
         HttpResponse responseEr = httpClient.execute(request);
         verify(getRequestedFor(urlPathEqualTo("/forecasts/v1/daily/1day/294021")));
         assertEquals(500, responseEr.getStatusLine().getStatusCode());
