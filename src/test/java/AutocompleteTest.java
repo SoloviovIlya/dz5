@@ -28,9 +28,11 @@ public class AutocompleteTest extends AbstractTest {
         locationEr.setKey("Error");
         logger.debug("Формирование мока для GET dataservice.accuweather.com/locations/v1/cities/autocomplete");
         stubFor(get(urlPathEqualTo("/locations/v1/cities/autocomplete"))
+                //тут надо добавить .withQueryParam("q", containing("Berlin")), т.к. эта чать участвует в запросе
                 .willReturn(aResponse()
                         .withStatus(200).withBody(mapper.writeValueAsString(locationOk))));
         stubFor(get(urlPathEqualTo("/locations/v1/cities/autocomplete"))
+                //тут надо добавить .withQueryParam("q", containing("error")), т.к. эта чать участвует в запросе
                 .willReturn(aResponse()
                         .withStatus(500).withBody(mapper.writeValueAsString(locationEr))));
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -48,7 +50,7 @@ public class AutocompleteTest extends AbstractTest {
         HttpResponse responseEr = httpClient.execute(request);
         verify(2,getRequestedFor(urlPathEqualTo("/locations/v1/cities/autocomplete")));
         assertEquals(200, responseOk.getStatusLine().getStatusCode());
-        assertEquals(200, responseEr.getStatusLine().getStatusCode());
+        assertEquals(200, responseEr.getStatusLine().getStatusCode()); //тут Вы определили код 500 в ответе, а не 200, надо assertEquals(500, responseEr.getStatusLine().getStatusCode())
         assertEquals("OK", mapper.readValue(responseOk.getEntity().getContent(), Location.class).getKey());
         assertEquals("Error", mapper.readValue(responseEr.getEntity().getContent(), Location.class).getKey());
     }
@@ -62,9 +64,11 @@ public class AutocompleteTest extends AbstractTest {
         locationEr.setKey("Error");
         logger.debug("Формирование мока для GET dataservice.accuweather.com/locations/v1/cities/autocomplete");
         stubFor(get(urlPathEqualTo("/locations/v1/cities/autocomplete"))
+                //тут надо добавить .withQueryParam("q", containing("London")), т.к. эта чать участвует в запросе
                 .willReturn(aResponse()
                         .withStatus(200).withBody(mapper.writeValueAsString(locationOk))));
         stubFor(get(urlPathEqualTo("/locations/v1/cities/autocomplete"))
+                //тут надо добавить .withQueryParam("q", containing(" ")), т.к. эта чать участвует в запросе
                 .willReturn(aResponse()
                         .withStatus(500).withBody(mapper.writeValueAsString(locationEr))));
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -82,7 +86,7 @@ public class AutocompleteTest extends AbstractTest {
         HttpResponse responseEr = httpClient.execute(request);
         verify(2,getRequestedFor(urlPathEqualTo("/locations/v1/cities/autocomplete")));
         assertEquals(200, responseOk.getStatusLine().getStatusCode());
-        assertEquals(200, responseEr.getStatusLine().getStatusCode());
+        assertEquals(200, responseEr.getStatusLine().getStatusCode()); //тут Вы определили код 500 в ответе, а не 200, надо assertEquals(500, responseEr.getStatusLine().getStatusCode())
         assertEquals("OK", mapper.readValue(responseOk.getEntity().getContent(), Location.class).getKey());
         assertEquals("Error", mapper.readValue(responseEr.getEntity().getContent(), Location.class).getKey());
     }
